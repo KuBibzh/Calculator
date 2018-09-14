@@ -1,0 +1,96 @@
+#ifndef _STACK_H_
+#define _STACK_H_
+
+
+template<typename T>
+class Stack
+{
+private:
+	//声明链表节点类型
+	typedef struct _Node
+	{
+		T data;  //数据域
+		struct _Node* next;  //指针域，指向后继
+	} Node;
+
+	Node* head;
+	int cap; //栈的容量
+	int len; //栈的长度
+
+public:
+	//创建一个有容量限制的空栈
+	Stack(int cap):cap(cap), len(0)
+	{
+		Node* node = new Node;
+		node->next = NULL;
+		this->head = node;
+	}
+
+	//创建一个没有容量限制的空栈
+	Stack():cap(-1), len(0)
+	{
+		Node* node = new Node;
+		node->next = NULL;
+		this->head = node;
+	}
+
+	//销毁栈
+	~Stack()
+	{
+		Node* p = NULL;
+
+		while(head != NULL)	
+		{
+			p = head->next;
+			delete head;
+			head = p;
+		}
+	}
+
+	void push(const T& data)  //入栈
+	{
+		if(len == cap) throw 2; //如果栈已满，则入栈失败
+
+		Node* node = new Node;
+		node->data = data;
+		node->next = head->next;
+
+		head->next = node;
+
+		++len;	
+	}
+
+	//出栈
+	void pop(void)
+	{
+		if(head->next == NULL) throw 1;
+
+		Node* p = head->next->next;
+		delete head->next;
+		head->next = p;
+
+		--len;
+	}
+
+	//获取栈顶元素
+	T& top(void) const
+	{
+		if(head->next == NULL)  throw 1;
+		return head->next->data;
+	}
+
+	//判空
+	bool empty() const
+	{
+		return !(head->next);
+	}
+
+	//获取栈的长度
+	int size() const
+	{
+		return len;
+	}
+};
+
+
+#endif
